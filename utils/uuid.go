@@ -4,7 +4,7 @@ import (
 	"github.com/rs/xid"
 )
 
-func CreateContainerID() string {
+func CreateUUID() string {
 	guid := xid.New()
 	return guid.String()
 }

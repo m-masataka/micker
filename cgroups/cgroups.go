@@ -49,10 +49,10 @@ func init() {
 
 func AddCIDtoCgroups(cid string) error {
 	for _, p := range pathArray { 
-		if _, err := os.Stat(p + cid); err == nil {
+		if _, err := os.Stat(p + "/" + cid); err == nil {
 			continue
 		}
-		if err := os.Mkdir(p + cid, 0755); err != nil {
+		if err := os.Mkdir(p + "/" + cid, 0755); err != nil {
 			return err
 		}
 	}
@@ -60,11 +60,12 @@ func AddCIDtoCgroups(cid string) error {
 }
 
 func RemoveCIDfromCgroups(cid string) error {
-	for _, p := range pathArray { 
-		if _, err := os.Stat(p + cid); err != nil {
+	for _, p := range pathArray {
+		if _, err := os.Stat(p + "/" + cid); err != nil {
+			fmt.Println(p + "/" +cid +" directory doesn't exist")
 			continue
 		}
-		if err := os.Remove(p + cid); err != nil {
+		if err := os.Remove(p + "/" + cid); err != nil {
 			return err
 		}
 	}
@@ -74,11 +75,20 @@ func RemoveCIDfromCgroups(cid string) error {
 func AddProcstoCgroups(cid string, pid int) error {
 	procsPath := "cgroup.procs"
 	for _, p := range pathArray { 
-		if _, err := os.Stat(p + cid + procsPath); err != nil {
+		if _, err := os.Stat(p + "/" + cid + "/" +procsPath); err != nil {
 			return err
 		}
 		content := []byte(strconv.Itoa(pid) + "\n")
-		ioutil.WriteFile( p + cid + procsPath, content, os.ModePerm)
+		ioutil.WriteFile( p + "/" + cid + "/" + procsPath, content, os.ModePerm)
 	}
+	return nil
+}
+
+func MemoryLimit(cid string, ml string) error {
+	if _, err := os.Stat(cMemory +"/"+ cid +"/memory.limit_in_bytes"); err != nil {
+		return err
+	}
+	content := []byte(ml + "\n")
+	ioutil.WriteFile(cMemory +"/"+ cid + "/memory.limit_in_bytes", content, os.ModePerm)
 	return nil
 }

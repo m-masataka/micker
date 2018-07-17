@@ -1,4 +1,4 @@
-package cmd
+package command
 
 import (
 	"fmt"
@@ -7,9 +7,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+
+
 func init() {
 	cobra.OnInitialize()
 	rootCmd.AddCommand(versionCmd)
+	runCmd.Flags().StringVarP(&rop.rootpath, "rootfs", "r", "default", "container rootfs")
+	runCmd.Flags().StringVarP(&rop.memorylimit, "memory-limit", "m", "1G" , "memory limit of container")
+	rootCmd.AddCommand(runCmd)
 }
 
 var rootCmd = &cobra.Command{
@@ -35,3 +40,5 @@ func Execute() {
 		os.Exit(-1)
 	}
 }
+
+
